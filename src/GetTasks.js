@@ -12,6 +12,10 @@ function GetTasks({ itemsPerPage }) {
   const axios = require('axios');
   const [js, setjs] = useState([]);
   const [val, setval] = useState('');
+  const [pending, setPending] = useState(13);
+  const [overdue, setOverdue] = useState(1);
+  const [finished, setFinished] = useState(1);
+  const [inprogress, setInprogress] = useState(1);
   const user = useSelector(selectUser);
   let navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,6 +38,21 @@ function GetTasks({ itemsPerPage }) {
   }, []);
   const handleStatus = (e, id) => {
     console.log(e.target.value);
+    switch(e.target.value){
+      case "inprogress":
+        setInprogress(inprogress+1);
+        break;
+        case "overdue":
+        setOverdue(overdue+1);
+        break;
+        case "finished":
+        setFinished(finished+1);
+        break;
+    }
+
+
+
+
     axios.post('http://localhost:8000/tasks/' + id, {
       headers:
       {
@@ -76,7 +95,7 @@ function GetTasks({ itemsPerPage }) {
       type: 'pie'
     },
     title: {
-      text: 'Browser market shares in May, 2020'
+      text: 'Assigned by Admin'
     },
     tooltip: {
       pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -100,22 +119,72 @@ function GetTasks({ itemsPerPage }) {
       name: 'Brands',
       colorByPoint: true,
       data: [{
-        name: 'Chrome',
-        y: 25,
+        name: 'Pending',
+        y: pending,
         sliced: true,
         selected: true
       },{
-        name: 'Internet Explorer',
-        y: 25
+        name: 'Overdue',
+        y: overdue
       }, {
-        name: 'Opera',
-        y: 25
+        name: 'Finished',
+        y: finished
       }, {
-        name: 'Sogou Explorer',
-        y: 25
+        name: 'In Progress',
+        y: inprogress
       }]
     }]
   }
+  const options2 = {
+    chart: {
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false,
+      type: 'pie'
+    },
+    title: {
+      text: 'Assigned by Self'
+    },
+    tooltip: {
+      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+      point: {
+        valueSuffix: '%'
+      }
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+        }
+      }
+    },
+    series: [{
+      name: 'Brands',
+      colorByPoint: true,
+      data: [{
+        name: 'Pending',
+        y: pending,
+        sliced: true,
+        selected: true
+      },{
+        name: 'Overdue',
+        y: overdue
+      }, {
+        name: 'Finished',
+        y: finished
+      }, {
+        name: 'In Progress',
+        y: inprogress
+      }]
+    }]
+  }
+
+
   return (
     <div>
       <div className='navbary'>
@@ -143,7 +212,7 @@ function GetTasks({ itemsPerPage }) {
         /></div>
         <div style={{ width: "100%" }}> <HighchartsReact
           highcharts={Highcharts}
-          options={options}
+          options={options2}
         /></div>
       </div>
 
@@ -156,9 +225,9 @@ function GetTasks({ itemsPerPage }) {
         <div style={cs}>
           <select style={ss} class="form-select" aria-label="Default select example">
             <option selected>Sort by</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+            <option value="1">Title</option>
+            <option value="2">Description</option>
+            <option value="3">Due Date</option>
           </select>
           <select style={ss} class="form-select" aria-label="Default select example">
             <option selected>Apply filter</option>
@@ -216,8 +285,8 @@ function GetTasks({ itemsPerPage }) {
                   <select onChange={(e) => handleStatus(e, item.id)} style={ts} class="form-select" aria-label="Default select example">
                     <option selected>pending</option>
                     <option value="finished">finished</option>
-                    <option value="in progress">in progress</option>
-                    {/* <option value="3">deleted</option> */}
+                    <option value="inprogress">in progress</option>
+                    <option value="overdue">overdue</option>
                   </select>
                   : item.status}</th>
                 <th>{item.due_date}</th>
