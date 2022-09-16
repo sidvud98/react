@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout, selectUser } from "./features/userSlice";
 import { useNavigate } from "react-router-dom";
+import logo from "./login.png";
 function Login() {
     const [useremail, setemail] = useState('')
     const [userpassword, setpassword] = useState('');
@@ -40,6 +41,7 @@ function Login() {
                     role: response.data.user.role,
                     verifytoken: response.data.access_token,
                 }))
+                localStorage.setItem('user', JSON.stringify(response.data));
                 if (response.data.user.email_verified_at !== null) { navigate('/dashboard') }
                 else { navigate('/emailverification') };
             })
@@ -94,7 +96,7 @@ function Login() {
                 <div style={wrapsty}>
                     <div style={formsdiv}>
                         <div style={pic}>
-                            <img src="https://www.freeiconspng.com/thumbs/login-icon/user-login-icon-14.png" />
+                            <img src={logo} />
                         </div>
                         <form onSubmit={clickfn}>
                             <label><b>Email Address</b></label><br />

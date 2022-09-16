@@ -5,6 +5,10 @@ import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import { logout, selectUser } from "./features/userSlice";
 import { useNavigate } from "react-router-dom";
+import Navbar from './navbar';
+
+
+
 
 function CreateTask() {
     const [taskTitle, settaskTitle] = useState('')
@@ -17,34 +21,42 @@ function CreateTask() {
         dispatch(logout());
         navigate('/login');
     };
-    const [taskAssignee, settaskAssignee] = useState(user.userid);
+    let token = JSON.parse(localStorage.getItem('user')).access_token;
+    console.log("token is " + token);
+    let role = JSON.parse(localStorage.getItem('user')).user.role;
+    console.log("role is " + role);
+    let userid = JSON.parse(localStorage.getItem('user')).user.id;
+    console.log("userid is " + userid);
+    let name = JSON.parse(localStorage.getItem('user')).user.name;
+    console.log("name is " + name);
+    const [taskAssignee, settaskAssignee] = useState();
     function clickfn(e) {
         e.preventDefault();
-        console.log({
-            title: taskTitle,
-            description: taskDescription,
-            assignee: (taskAssignee),
-            creator: (user.userid),
-            due_date: date_value,
-            // created_by: user.userid
-        });
+        // console.log({
+        //     title: taskTitle,
+        //     description: taskDescription,
+        //     assignee: (taskAssignee),
+        //     creator: (userid),
+        //     due_date: date_value,
+        //     // created_by: user.userid
+        // });
         axios.post('http://localhost:8000/tasks/create', {
             title: taskTitle,
             description: taskDescription,
             assignee: (taskAssignee),
-            creator: (user.userid),
+            creator: (userid),
             due_date: date_value,
             // created_by: user.userid
         }, {
             headers:
             {
-                'Authorization': "Bearer " + user.verifytoken
+                'Authorization': "Bearer " + token
             }
         })
             .then(function (response) {
 
                 alert("Task Created Succesfully");
-                navigate("/dashboard");
+                navigate("/gettasks");
             })
             .catch((error) => {
 
@@ -75,9 +87,9 @@ function CreateTask() {
     };
     return (
         <div>
-            <div className='navbary'>
+            {/* <div className='navbary'>
                 <nav className="navbar navbar-expand-lg navbar-dark bg-dark container-fluid">
-                    <a className="navbar-brand" href="#"><em>&nbsp;&nbsp;DeMock</em></a>
+                    <a className="navbar-brand" href="#"><em>&nbsp;&nbsp;Logo</em></a>
                     <div className="d-flex navbar-nav container-fluid">
                         <div className='d-flex'>
                             <button className="myTasks nav-item nav-link" onClick={(e) => { navigate('/dashboard') }}><span style={{ color: "white" }}>Dashboard</span></button>
@@ -89,9 +101,9 @@ function CreateTask() {
                             <button className="logout nav-item nav-link align-self-end" onClick={(e) => loggedout(e)}><span style={{ color: "white" }}>Logout</span></button>
                         </div>
                     </div>
-                    {/* </div> */}
                 </nav>
-            </div>
+            </div> */}
+            <Navbar className='navbary' dis="ct" rol={role}/>
             <div style={formstyle}>
                 <form onSubmit={clickfn}>
                     <label><b>Title </b></label>
@@ -101,7 +113,7 @@ function CreateTask() {
                     <input style={xstyle} onChange={(e) => { e.preventDefault(); const taskDescription = e.target.value; settaskDescription(taskDescription); }} type="text" placeholder="Description of the Task" required />
 
                     <label><b>Assignee</b></label>
-                    {user.role == 1 && <input style={xstyle} onChange={(e) => { e.preventDefault(); const taskAssignee = e.target.value; settaskAssignee(taskAssignee); }} type="text" placeholder="Assignee" required />}
+                    <input style={xstyle} onChange={(e) => { e.preventDefault(); const taskAssignee = e.target.value; settaskAssignee(taskAssignee); }} type="text" placeholder="Assignee" required />
                     <label><b>Due Date &nbsp;</b></label>
 
 

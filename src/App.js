@@ -14,9 +14,31 @@ import Requestpasswordreset from "./Requestpasswordreset";
 import ResetPassword from "./ResetPassword";
 import ChangePassword from './ChangePassword';
 import CreateTask from './CreateTask';
+import CreateUser from './CreateUser';
 import GetTasks from './GetTasks';
+import { useEffect, useState } from 'react';
+import Pusher from 'pusher-js';
+
+
+
+
+
+
 function App() {
+
+  // const user = useSelector(selectUser);
+
+  
+  // useEffect(() => {
+    
+  // }, [user]);
+  
   const user = useSelector(selectUser);
+  
+
+
+
+
   return (
     <Router>
       <div>
@@ -32,6 +54,7 @@ function App() {
           <Route path="/password/reset" element={<ResetPassword />} />
           <Route path="/password/change" element={<ChangePassword />} />
           <Route path="/create/task" element={<CreateTask />} />
+          <Route path="/create/user" element={<CreateUser />} />
           <Route path="/gettasks" element={<GetTasks />} />
         </Routes>
       </div>

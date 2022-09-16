@@ -176,7 +176,7 @@ img.dashboard {
   border-radius: 10px;
   background-color: red;
   position: relative;
-  top: 50px;
+  /* top: 50px; */
   right: -1255px;
   width: 170px;
 }
@@ -273,6 +273,8 @@ input.search {
   margin: 20px;
   width: 40%;
   border-radius: 20px;
+  position: relative;
+  left: -20px
 }
 
 button.passwordchangebtn {
